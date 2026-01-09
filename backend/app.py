@@ -7,8 +7,13 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
+import os
+
+# ... imports ...
+
 evaluator = Evaluator()
-DATABASE = 'poker_sessions.db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.path.join(BASE_DIR, 'poker_sessions.db')
 
 def get_db():
     db = getattr(g, '_database', None)
