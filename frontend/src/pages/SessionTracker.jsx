@@ -73,31 +73,43 @@ export function SessionTracker() {
                 <div className="tracker-list">
                     {players.map((player, index) => (
                         <div key={index} className="tracker-row">
-                            <input
-                                placeholder="Name"
-                                value={player.name}
-                                onChange={e => updatePlayer(index, 'name', e.target.value)}
-                            />
-                            <input
-                                type="number"
-                                placeholder="0"
-                                value={player.buy_in}
-                                onChange={e => updatePlayer(index, 'buy_in', e.target.value)}
-                            />
-                            <input
-                                type="number"
-                                placeholder="0"
-                                value={player.rebuys}
-                                onChange={e => updatePlayer(index, 'rebuys', e.target.value)}
-                            />
-                            <input
-                                type="number"
-                                placeholder="0"
-                                value={player.endChips}
-                                onChange={e => updatePlayer(index, 'endChips', e.target.value)}
-                            />
+                            <div className="input-group">
+                                <label className="mobile-label">Name</label>
+                                <input
+                                    placeholder="Name"
+                                    value={player.name}
+                                    onChange={e => updatePlayer(index, 'name', e.target.value)}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label className="mobile-label">Buy-In</label>
+                                <input
+                                    type="number"
+                                    placeholder="0"
+                                    value={player.buy_in}
+                                    onChange={e => updatePlayer(index, 'buy_in', e.target.value)}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label className="mobile-label">Rebuys</label>
+                                <input
+                                    type="number"
+                                    placeholder="0"
+                                    value={player.rebuys}
+                                    onChange={e => updatePlayer(index, 'rebuys', e.target.value)}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label className="mobile-label">End Chips</label>
+                                <input
+                                    type="number"
+                                    placeholder="0"
+                                    value={player.endChips}
+                                    onChange={e => updatePlayer(index, 'endChips', e.target.value)}
+                                />
+                            </div>
                             <button
-                                className="btn-icon danger"
+                                className="btn-icon danger delete-btn"
                                 onClick={() => removePlayer(index)}
                                 disabled={players.length === 1}
                             >

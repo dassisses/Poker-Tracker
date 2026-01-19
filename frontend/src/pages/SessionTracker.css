@@ -63,14 +63,40 @@
     }
 
     .tracker-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
+        grid-template-columns: 1fr;
+        /* Stack vertically on mobile */
+        gap: 1rem;
         padding: 1.25rem;
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        /* For absolute delete button */
     }
 
-    .tracker-row input:first-child {
-        grid-column: 1 / -1;
+    .delete-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+
+    .tracker-row .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
+.mobile-label {
+    display: none;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-left: 0.25rem;
+}
+
+@media (max-width: 640px) {
+    .mobile-label {
+        display: block;
     }
 }
