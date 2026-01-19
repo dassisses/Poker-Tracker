@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Save, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../config/api';
 import './SessionTracker.css';
 
 export function SessionTracker() {
@@ -46,18 +47,11 @@ export function SessionTracker() {
                 endChips: parseFloat(p.endChips || 0)
             }));
 
-            const res = await fetch('/api/sessions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ players: payload })
-            });
-
-            if (!res.ok) throw new Error('Failed to save session');
-
+            await api.post('/sessions', { players: payload });
             navigate('/history');
         } catch (err) {
             console.error(err);
-            setError('Error saving session. Please try again.');
+            setError(err.message || 'Error saving session. Please try again.');
             setSubmitting(false);
         }
     };

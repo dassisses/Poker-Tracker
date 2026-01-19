@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Award, Gamepad2, TrendingUp, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { api } from '../config/api';
 import './Dashboard.css';
 
 export function Dashboard() {
@@ -9,18 +10,14 @@ export function Dashboard() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch('/api/stats')
-            .then(res => {
-                if (!res.ok) throw new Error('Failed to fetch stats');
-                return res.json();
-            })
+        api.get('/stats')
             .then(data => {
                 setStats(data);
                 setLoading(false);
             })
             .catch(err => {
                 console.error(err);
-                setError('Could not load stats. Ensure backend is running.');
+                setError('Could not load stats. Backend könnte im Sleep-Mode sein - bitte warten Sie 30 Sekunden.');
                 setLoading(false);
             });
     }, []);

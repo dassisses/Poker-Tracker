@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Calculator } from 'lucide-react';
 import { CardPicker } from '../components/CardPicker';
+import { api } from '../config/api';
 import './OddsCalculator.css';
 
 export function OddsCalculator() {
@@ -56,14 +57,7 @@ export function OddsCalculator() {
                 opponent_count: parseInt(opponents)
             };
 
-            const res = await fetch('/api/odds', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Calculation failed');
+            const data = await api.post('/odds', payload);
             setResult(data);
         } catch (err) {
             console.error(err);

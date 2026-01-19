@@ -19,6 +19,9 @@ services:
     rootDir: frontend
     buildCommand: npm run build
     staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://poker-tracker-backend-3x39.onrender.com/api
     routes:
       - type: rewrite
         source: /api/*

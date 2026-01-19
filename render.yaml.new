@@ -1,0 +1,47 @@
+# Optimierte Render-Konfiguration für Poker Tracker
+# Diese Version behebt das Frontend-Backend Verbindungsproblem
+
+services:
+  # Backend Service (Flask API)
+  - type: web
+    name: poker-tracker-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9
+    # Health Check Endpoint (optional, aber empfohlen)
+    healthCheckPath: /api/stats
+
+  # Frontend Service (Vite + React)
+  - type: web
+    name: poker-tracker-frontend
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm run build
+    staticPublishPath: dist
+    envVars:
+      # WICHTIG: Passen Sie diese URL an Ihre echte Backend-URL an!
+      # Format: https://poker-tracker-backend-XXXX.onrender.com/api
+      - key: VITE_API_BASE_URL
+        value: https://poker-tracker-backend-3x39.onrender.com/api
+    routes:
+      # Leite alle /api/* Anfragen zum Backend weiter
+      - type: rewrite
+        source: /api/*
+        destination: https://poker-tracker-backend-3x39.onrender.com/api/*
+      # Alle anderen Anfragen gehen zum Frontend (SPA Routing)
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+# WICHTIG - NACH DEM DEPLOYMENT:
+# 1. Finden Sie Ihre echte Backend-URL im Render Dashboard
+# 2. Ersetzen Sie BEIDE Vorkommen von "https://poker-tracker-backend-3x39.onrender.com"
+#    mit Ihrer echten URL
+# 3. Committen und pushen Sie die Änderung ODER deployen Sie manuell neu
+

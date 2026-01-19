@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Calendar, Users, Trophy, ChevronDown, ChevronUp } from 'lucide-react';
+import { api } from '../config/api';
 import './SessionHistory.css';
 
 export function SessionHistory() {
@@ -9,8 +10,7 @@ export function SessionHistory() {
     const [details, setDetails] = useState({}); // Cache details by session ID
 
     useEffect(() => {
-        fetch('/api/history')
-            .then(res => res.json())
+        api.get('/history')
             .then(data => {
                 setSessions(data);
                 setLoading(false);
@@ -31,8 +31,7 @@ export function SessionHistory() {
 
         if (!details[id]) {
             try {
-                const res = await fetch(`/api/sessions/${id}`);
-                const data = await res.json();
+                const data = await api.get(`/sessions/${id}`);
                 setDetails(prev => ({ ...prev, [id]: data.players }));
             } catch (err) {
                 console.error("Failed to load details", err);

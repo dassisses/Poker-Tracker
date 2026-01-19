@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Trash2, ArrowRightCircle } from 'lucide-react';
+import { api } from '../config/api';
 import './Settlement.css';
 
 export function Settlement() {
@@ -45,15 +46,7 @@ export function Settlement() {
                 end_chip: parseFloat(p.end_chip || 0)
             }));
 
-            const res = await fetch('/api/settle', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ players: payload })
-            });
-
-            if (!res.ok) throw new Error('Calculation failed');
-
-            const data = await res.json();
+            const data = await api.post('/settle', { players: payload });
             setTransactions(data.transactions);
         } catch (err) {
             console.error(err);
