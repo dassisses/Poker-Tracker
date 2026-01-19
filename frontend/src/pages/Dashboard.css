@@ -9,6 +9,38 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
+    /* Allow wrapping on very small screens */
+    gap: 1rem;
+}
+
+@media (max-width: 600px) {
+    .header-actions {
+        /* On mobile, keep them in a row but adjust sizes */
+        margin-bottom: 1.5rem;
+    }
+
+    .header-actions h1 {
+        font-size: 2rem;
+        /* Slightly smaller title */
+    }
+
+    .header-actions .btn {
+        padding: 0.6rem;
+        /* Smaller padding */
+        border-radius: 50%;
+        /* Circle button for icon only */
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header-actions .btn span {
+        display: none;
+        /* Hide text "New Session" */
+    }
 }
 
 .stats-grid {
@@ -70,6 +102,7 @@
     line-height: 1;
     background: linear-gradient(to right, #fff, #cbd5e1);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -84,6 +117,8 @@
 
 .table-responsive {
     margin-top: 1rem;
+    overflow-x: auto;
+    /* Ensure table scrolls on mobile */
 }
 
 .table {
@@ -101,12 +136,16 @@
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 0.05em;
+    white-space: nowrap;
+    /* Prevent headers breaking poorly */
 }
 
 .table td {
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-weight: 500;
+    white-space: nowrap;
+    /* Prevent content wrapping too aggressively */
 }
 
 .table tr:last-child td {

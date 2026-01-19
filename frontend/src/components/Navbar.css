@@ -74,9 +74,39 @@
 @media (max-width: 768px) {
     .nav-links span {
         display: none;
+        /* Hide labels of nav items */
     }
 
     .nav-link {
-        padding: 0.75rem;
+        padding: 0.6rem;
+        /* Smaller padding */
+    }
+
+    .nav-links {
+        gap: 0.25rem;
+        /* Smaller gap between icons */
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.2rem;
+        /* Smaller logo text */
+    }
+
+    .logo span {
+        /* On very small screens, you might want to hide the text or let it wrap, 
+           but usually reducing size is enough. If it's still too big: */
+        display: inline-block;
+    }
+
+    .navbar-content {
+        gap: 0.5rem;
+        /* Reduce gap between logo and navs */
+    }
+
+    .nav-link {
+        padding: 0.5rem;
+        /* Even smaller touch targets */
     }
 }

@@ -33,7 +33,7 @@ export function Dashboard() {
                 <h1>Dashboard</h1>
                 <Link to="/session" className="btn btn-primary">
                     <Plus size={20} />
-                    New Session
+                    <span>New Session</span>
                 </Link>
             </div>
 
