@@ -17,7 +17,7 @@ services:
     env: static
     rootDir: frontend
     buildCommand: npm run build
-    staticPublishPath: dist
+    publishPath: dist
     routes:
       # Rewrite API calls to the backend service
       - type: rewrite
