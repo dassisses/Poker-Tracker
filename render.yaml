@@ -16,15 +16,13 @@ services:
     name: poker-tracker-frontend
     env: static
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm run build
     staticPublishPath: dist
     routes:
       # Rewrite API calls to the backend service
-      # NOTE: You MUST update the destination URL to match your deployed backend URL.
-      # Render assigns a unique URL like https://poker-tracker-backend-xyz.onrender.com
       - type: rewrite
         source: /api/*
-        destination: https://poker-tracker-backend.onrender.com/api/* 
+        destination: https://poker-tracker-backend-3x39.onrender.com/api/*
       # SPA Fallback for all other routes
       - type: rewrite
         source: /*
