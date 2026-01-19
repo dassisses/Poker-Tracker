@@ -1,0 +1,32 @@
+services:
+  # Backend Service (Flask)
+  - type: web
+    name: poker-tracker-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+    plan: free
+
+  # Frontend Service (Vite + React)
+  - type: static
+    name: poker-tracker-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      # Rewrite API calls to the backend service
+      # NOTE: You MUST update the destination URL to match your deployed backend URL.
+      # Render assigns a unique URL like https://poker-tracker-backend-xyz.onrender.com
+      - type: rewrite
+        source: /api/*
+        destination: https://poker-tracker-backend.onrender.com/api/* 
+      # SPA Fallback for all other routes
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    plan: free
