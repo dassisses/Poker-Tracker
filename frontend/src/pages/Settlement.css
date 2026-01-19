@@ -27,6 +27,25 @@
     border-radius: var(--radius-md);
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: background 0.2s;
+    position: relative;
+}
+
+@media (max-width: 600px) {
+    .player-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .player-row input:first-child {
+        grid-column: 1 / -1;
+        /* Name takes full width */
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
 }
 
 .player-row:hover {
@@ -51,6 +70,18 @@
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    /* Stack buttons on small screens */
+}
+
+@media (max-width: 480px) {
+    .actions {
+        flex-direction: column;
+    }
+
+    .actions button {
+        width: 100%;
+    }
 }
 
 .result-section {
@@ -74,6 +105,11 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.error-transaction {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
 .arrow {
     display: flex;
     flex-direction: column;
@@ -92,6 +128,10 @@
     height: 1px;
     background: rgba(255, 255, 255, 0.1);
     z-index: -1;
+}
+
+.text-warning {
+    color: var(--warning);
 }
 
 .amount {

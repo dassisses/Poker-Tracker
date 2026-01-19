@@ -126,14 +126,31 @@ def get_odds():
 @app.route('/api/settle', methods=['POST'])
 def settle_game():
     data = request.json
-    # Expecting: list of { name: "Alice", buy_in: 100, end_chip: 150 }
     players = data.get('players', [])
     
     # Calculate net profit/loss
     net_results = []
+    total_net = 0
+    
     for p in players:
-        net = p['end_chip'] - p['buy_in']
+        # Ensure numbers
+        end_chip = float(p.get('end_chip', 0) or 0)
+        buy_in = float(p.get('buy_in', 0) or 0)
+        net = end_chip - buy_in
+        total_net += net
         net_results.append({ 'name': p['name'], 'net': net })
+
+    # Handle Discrepancy (e.g., miscounted chips, money appearing from nowhere)
+    # If total_net is positive, it means there's extra money (Surplus). Someone needs to PAY it (The "Pot/Error").
+    # If total_net is negative, it means money is missing (Deficit). Someone needs to RECEIVE it.
+    
+    # We add a virtual participant to balance the equation.
+    if abs(total_net) > 0.01:
+        net_results.append({ 
+            'name': 'Pot Mismatch', 
+            'net': -total_net, # Balances the equation
+            'is_virtual': True
+        })
 
     # Sort by net: losers first (negative), winners last (positive)
     net_results.sort(key=lambda x: x['net'])
@@ -148,26 +165,30 @@ def settle_game():
         loser = net_results[i]
         winner = net_results[j]
         
+        # Round to 2 decimals to avoid floating point dust
         amount = min(abs(loser['net']), winner['net'])
+        amount = round(amount, 2)
         
         if amount == 0:
-            if loser['net'] == 0: i += 1
-            if winner['net'] == 0: j -= 1
+            if abs(loser['net']) < 0.01: i += 1
+            if abs(winner['net']) < 0.01: j -= 1
             continue
             
         transactions.append({
             "from": loser['name'],
             "to": winner['name'],
-            "amount": amount
+            "amount": amount,
+            "is_error": loser.get('is_virtual', False) or winner.get('is_virtual', False)
         })
         
         loser['net'] += amount
         winner['net'] -= amount
         
+        # Check if settled (allow small float error)
         if abs(loser['net']) < 0.01: i += 1
         if abs(winner['net']) < 0.01: j -= 1
         
-    return jsonify({"transactions": transactions})
+    return jsonify({"transactions": transactions, "discrepancy": total_net})
 
 @app.route('/api/history', methods=['GET'])
 def get_history():
@@ -192,6 +213,17 @@ def get_history():
             "player_count": len(players)
         })
     return jsonify(sessions)
+
+@app.route('/api/sessions/<int:session_id>', methods=['DELETE'])
+def delete_session(session_id):
+    db = get_db()
+    try:
+        db.execute('DELETE FROM players WHERE session_id = ?', (session_id,))
+        db.execute('DELETE FROM sessions WHERE id = ?', (session_id,))
+        db.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/sessions', methods=['POST'])
 def save_session():

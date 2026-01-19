@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Calendar, Users, Trophy, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Users, Trophy, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { api } from '../config/api';
 import './SessionHistory.css';
 
@@ -83,7 +83,22 @@ export function SessionHistory() {
                                             <span>Winner: {session.winner}</span>
                                         </div>
                                     </div>
-                                    {expandedId === session.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                    <div className="history-actions">
+                                        <button
+                                            className="btn-icon danger delete-history-btn"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (window.confirm('Delete this session?')) {
+                                                    api.delete(`/sessions/${session.id}`).then(() => {
+                                                        setSessions(sessions.filter(s => s.id !== session.id));
+                                                    });
+                                                }
+                                            }}
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                        {expandedId === session.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                    </div>
                                 </div>
                             </div>
 

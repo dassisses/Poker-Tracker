@@ -52,6 +52,8 @@
     background: rgba(0, 0, 0, 0.2);
     padding: 0;
     animation: slideDown 0.3s ease-out;
+    overflow-x: auto;
+    /* Enable scroll on mobile */
 }
 
 @keyframes slideDown {

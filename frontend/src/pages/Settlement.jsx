@@ -9,6 +9,7 @@ export function Settlement() {
         { name: '', buy_in: '', end_chip: '' }
     ]);
     const [transactions, setTransactions] = useState(null);
+    const [discrepancy, setDiscrepancy] = useState(0);
     const [error, setError] = useState(null);
 
     const addPlayer = () => {
@@ -31,6 +32,7 @@ export function Settlement() {
     const calculateSettlement = async () => {
         setError(null);
         setTransactions(null);
+        setDiscrepancy(0);
 
         // Validate
         const validPlayers = players.filter(p => p.name.trim() !== '');
@@ -48,6 +50,7 @@ export function Settlement() {
 
             const data = await api.post('/settle', { players: payload });
             setTransactions(data.transactions);
+            setDiscrepancy(data.discrepancy || 0);
         } catch (err) {
             console.error(err);
             setError('Failed to calculate settlement');
@@ -65,24 +68,27 @@ export function Settlement() {
                         {players.map((player, index) => (
                             <div key={index} className="player-row">
                                 <input
+                                    className="player-input"
                                     placeholder="Player Name"
                                     value={player.name}
                                     onChange={e => updatePlayer(index, 'name', e.target.value)}
                                 />
                                 <input
+                                    className="amount-input"
                                     type="number"
                                     placeholder="Buy In"
                                     value={player.buy_in}
                                     onChange={e => updatePlayer(index, 'buy_in', e.target.value)}
                                 />
                                 <input
+                                    className="amount-input"
                                     type="number"
                                     placeholder="End Chips"
                                     value={player.end_chip}
                                     onChange={e => updatePlayer(index, 'end_chip', e.target.value)}
                                 />
                                 {players.length > 2 && (
-                                    <button className="btn-icon danger" onClick={() => removePlayer(index)}>
+                                    <button className="btn-icon danger delete-btn" onClick={() => removePlayer(index)}>
                                         <Trash2 size={18} />
                                     </button>
                                 )}
@@ -105,16 +111,25 @@ export function Settlement() {
                 {transactions && (
                     <div className="card result-section fade-in">
                         <h2>Payouts</h2>
+                        
+                        {Math.abs(discrepancy) > 0.01 && (
+                            <div className="alert warning">
+                                <strong>⚠️ Mismatch Detected:</strong> ${Math.abs(discrepancy).toFixed(2)} 
+                                {discrepancy > 0 ? ' extra in pot' : ' missing from pot'}.
+                                <br/><span style={{fontSize: '0.85em', opacity: 0.8}}>Transactions include "Pot Mismatch" to balance.</span>
+                            </div>
+                        )}
+
                         {transactions.length === 0 ? (
                             <p className="no-transactions">All settled up!</p>
                         ) : (
                             <div className="transaction-list">
                                 {transactions.map((t, i) => (
-                                    <div key={i} className="transaction-item">
+                                    <div key={i} className={`transaction-item ${t.is_error ? 'error-transaction' : ''}`}>
                                         <span className="name loser">{t.from}</span>
                                         <div className="arrow">
                                             <span className="amount">${t.amount.toFixed(2)}</span>
-                                            <ArrowRightCircle size={20} />
+                                            <ArrowRightCircle size={20} className={t.is_error ? 'text-warning' : ''} />
                                         </div>
                                         <span className="name winner">{t.to}</span>
                                     </div>
